@@ -1,6 +1,7 @@
 package ru.hogwarts.schoolsql.controller;
 
 
+import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.service.StudentService;
 import org.springframework.http.HttpStatus;
@@ -58,10 +59,15 @@ public class StudentController {
         return ResponseEntity.ok(Collections.emptyList());
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<Student>> getAllByAgeBetween(@RequestParam("min") int minAge,
+    @GetMapping(params = "min, max")
+    public Collection<Student> getAllByAgeBetween(@RequestParam("min") int minAge,
                                                                         @RequestParam ("max") int maxAge) {
-        return studentService.getAllByAgeBetween(minAge, maxAge);
+        return (Collection<Student>) studentService.getAllByAgeBetween(minAge, maxAge);
+    }
+
+    @GetMapping("/{id}/faculty")
+    public Optional<Faculty> getFacultyByStudentId(@PathVariable long id) {
+        return studentService.getFacultyByStudentId(id);
     }
 
 

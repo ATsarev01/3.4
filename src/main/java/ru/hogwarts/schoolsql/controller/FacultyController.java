@@ -1,6 +1,7 @@
 package ru.hogwarts.schoolsql.controller;
 
 
+import org.springframework.data.repository.query.Param;
 import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.service.FacultyService;
@@ -51,13 +52,22 @@ public class FacultyController {
         return ResponseEntity.ok().build();
     }
 
-// Controller
-    @GetMapping
+    @GetMapping(params = "color")
     public ResponseEntity<List<Student>> findFaculties(@RequestParam(required = false) String color) {
         if (color != null && !color.isBlank()) {
             return ResponseEntity.ok(facultyService.findByColor(color));
         }
         return ResponseEntity.ok(Collections.emptyList());
+    }
+
+    @GetMapping(params = "nameOrColor")
+    public ResponseEntity<List<Student>> findFacultiesByNameOrColor(@RequestParam ("nameOrColor") String nameOrColor)   {
+        return facultyService.findFacultiesByNameOrColor(nameOrColor);
+    }
+
+    @GetMapping("/{id}/students")
+    public List<Student> getStudentByFacultyId(@PathVariable long id) {
+        return facultyService.getStudentByFacultyId(id);
     }
 
 

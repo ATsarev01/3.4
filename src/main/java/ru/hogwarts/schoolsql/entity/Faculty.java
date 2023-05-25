@@ -13,6 +13,8 @@ public class Faculty {
     private Long id;
     private String name, color;
 
+
+
     public Faculty() {
     }
 
