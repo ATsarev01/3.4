@@ -7,6 +7,7 @@ import ru.hogwarts.schoolsql.repository.FacultyRepository;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoolsql.repository.StudentRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,15 +48,13 @@ public class FacultyService {
                     return faculty;
                 });
     }
-
-    // Service
-    public List<Student> findByColor(String color) {
+    public Collection<Faculty> findByColor(String color) {
         return facultyRepository.findAllByColor(color);
     }
 
-    public ResponseEntity<List<Student>> findFacultiesByNameOrColor(String nameOrColor) {
-        return (ResponseEntity<List<Student>>) facultyRepository.findAllByNameContainsIgnoreCaseOOrColorContainsIgnoreCase
-                (nameOrColor, nameOrColor) ;
+    public Collection<Faculty> findFacultiesByNameOrColor(String nameOrColor) {
+        return facultyRepository.findAllByNameContainsIgnoreCaseOrColorContainsIgnoreCase
+                (nameOrColor, nameOrColor);
     }
 
     public List<Student> getStudentByFacultyId(long id) {

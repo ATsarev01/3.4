@@ -1,14 +1,12 @@
 package ru.hogwarts.schoolsql.controller;
 
 
-import org.springframework.data.repository.query.Param;
 import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.service.FacultyService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +22,9 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<Faculty>> getFacultyInfo(@PathVariable Long id) {
+    public Optional<Faculty> getFacultyInfo(@PathVariable Long id) {
         Optional<Faculty> faculty = facultyService.findFaculty(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
+        return faculty;
     }
 
     @PostMapping
@@ -38,30 +33,26 @@ public class FacultyController {
     }
 
     @PutMapping
-    public ResponseEntity<Optional<Faculty>> editFaculty(@RequestBody long id, @RequestBody Faculty faculty) {
+    public Optional<Faculty> editFaculty(@RequestBody long id, @RequestBody Faculty faculty) {
         Optional<Faculty> foundFaculty = facultyService.editFaculty(id, faculty);
-        if (foundFaculty == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(foundFaculty);
+        return foundFaculty;
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
-        facultyService.deleteFaculty(id);
-        return ResponseEntity.ok().build();
+    public Optional<Faculty> deleteFaculty(@PathVariable Long id) {
+        return facultyService.deleteFaculty(id);
     }
 
     @GetMapping(params = "color")
-    public ResponseEntity<List<Student>> findFaculties(@RequestParam(required = false) String color) {
+    public Collection<Faculty> findFaculties(@RequestParam(required = false) String color) {
         if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(facultyService.findByColor(color));
+            return facultyService.findByColor(color);
         }
-        return ResponseEntity.ok(Collections.emptyList());
+        return Collections.emptyList();
     }
 
     @GetMapping(params = "nameOrColor")
-    public ResponseEntity<List<Student>> findFacultiesByNameOrColor(@RequestParam ("nameOrColor") String nameOrColor)   {
+    public Collection<Faculty> findFacultiesByNameOrColor(@RequestParam("nameOrColor") String nameOrColor)   {
         return facultyService.findFacultiesByNameOrColor(nameOrColor);
     }
 

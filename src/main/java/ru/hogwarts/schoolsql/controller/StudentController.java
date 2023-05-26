@@ -23,12 +23,9 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<Student>> getStudentInfo(@PathVariable Long id) {
+    public Optional<Student> getStudentInfo(@PathVariable Long id) {
         Optional<Student> student = studentService.findStudent(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+        return student;
     }
 
     @PostMapping
@@ -37,32 +34,28 @@ public class StudentController {
     }
 
     @PutMapping
-    public ResponseEntity<Optional<Student>> editStudent(@RequestBody long id, @RequestBody Student student) {
+    public Optional<Student> editStudent(@RequestBody long id, @RequestBody Student student) {
         Optional<Student> foundStudent = studentService.editStudent(id, student);
-        if (foundStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(foundStudent);
+        return foundStudent;
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok().build();
+    public Optional<Student> deleteStudent(@PathVariable Long id) {
+        return studentService.deleteStudent(id);
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
+    public Collection<Student> findStudents(@RequestParam(required = false) int age) {
         if (age > 0) {
-            return ResponseEntity.ok(studentService.findByAge(age));
+            return studentService.findByAge(age);
         }
-        return ResponseEntity.ok(Collections.emptyList());
+        return Collections.emptyList();
     }
 
-    @GetMapping(params = "min, max")
+    @GetMapping(params = {"min, max"})
     public Collection<Student> getAllByAgeBetween(@RequestParam("min") int minAge,
                                                                         @RequestParam ("max") int maxAge) {
-        return (Collection<Student>) studentService.getAllByAgeBetween(minAge, maxAge);
+        return studentService.getAllByAgeBetween(minAge, maxAge);
     }
 
     @GetMapping("/{id}/faculty")

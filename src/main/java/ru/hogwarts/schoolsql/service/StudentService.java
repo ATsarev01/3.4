@@ -70,10 +70,9 @@ public class StudentService {
         return studentRepository.findAllByAge(age);
     }
 
-    public ResponseEntity<Collection<Student>> getAllByAgeBetween(int minAge, int maxAge) {
-        return (ResponseEntity<Collection<Student>>) studentRepository.findAllByAgeBetween(minAge, maxAge);
+    public Collection<Student> getAllByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
-
 
     public Optional<Faculty> getFacultyByStudentId(long id) {
         return studentRepository.findById(id)
