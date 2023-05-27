@@ -7,7 +7,6 @@ import ru.hogwarts.schoolsql.service.FacultyService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,38 +21,34 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public Optional<Faculty> getFacultyInfo(@PathVariable Long id) {
-        Optional<Faculty> faculty = facultyService.findFaculty(id);
-        return faculty;
+    public Optional<Faculty> getById(@PathVariable Long id) {
+        return facultyService.getById(id);
     }
-
     @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.addFaculty(faculty);
+    public Faculty add(@RequestBody Faculty faculty) {
+        return facultyService.add(faculty);
     }
 
-    @PutMapping
-    public Optional<Faculty> editFaculty(@RequestBody long id, @RequestBody Faculty faculty) {
-        Optional<Faculty> foundFaculty = facultyService.editFaculty(id, faculty);
-        return foundFaculty;
+    @PutMapping("{id}")
+    public Optional<Faculty> update(@PathVariable long id, @RequestBody Faculty faculty) {
+        return facultyService.update(id, faculty);
     }
 
     @DeleteMapping("{id}")
-    public Optional<Faculty> deleteFaculty(@PathVariable Long id) {
-        return facultyService.deleteFaculty(id);
+    public Optional<Faculty> deleteById(@PathVariable Long id) {
+        return facultyService.deleteById(id);
     }
 
     @GetMapping(params = "color")
-    public Collection<Faculty> findFaculties(@RequestParam(required = false) String color) {
-        if (color != null && !color.isBlank()) {
-            return facultyService.findByColor(color);
-        }
-        return Collections.emptyList();
+    public Collection<Faculty> getALl(@RequestParam(value = "color", required = false) String color) {
+        return Optional.ofNullable(color)
+                .map(facultyService::getAllByColor)
+                .orElseGet(facultyService::getAll);
     }
 
     @GetMapping(params = "nameOrColor")
-    public Collection<Faculty> findFacultiesByNameOrColor(@RequestParam("nameOrColor") String nameOrColor)   {
-        return facultyService.findFacultiesByNameOrColor(nameOrColor);
+    public Collection<Faculty> getAllByNameOrColor(@RequestParam("nameOrColor") String nameOrColor)   {
+        return facultyService.getAllByNameOrColor(nameOrColor);
     }
 
     @GetMapping("/{id}/students")

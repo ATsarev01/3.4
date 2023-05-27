@@ -4,12 +4,9 @@ package ru.hogwarts.schoolsql.controller;
 import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.service.StudentService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -23,38 +20,35 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public Optional<Student> getStudentInfo(@PathVariable Long id) {
-        Optional<Student> student = studentService.findStudent(id);
-        return student;
+    public Optional<Student> getById(@PathVariable Long id) {
+        return studentService.getById(id);
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public Student add(@RequestBody Student student) {
+        return studentService.add(student);
     }
 
     @PutMapping
-    public Optional<Student> editStudent(@RequestBody long id, @RequestBody Student student) {
-        Optional<Student> foundStudent = studentService.editStudent(id, student);
-        return foundStudent;
+    public Optional<Student> update(@RequestBody long id, @RequestBody Student student) {
+        return studentService.update(id, student);
     }
 
     @DeleteMapping("{id}")
-    public Optional<Student> deleteStudent(@PathVariable Long id) {
-        return studentService.deleteStudent(id);
+    public Optional<Student> deleteById(@PathVariable Long id) {
+        return studentService.deleteById(id);
     }
 
     @GetMapping
-    public Collection<Student> findStudents(@RequestParam(required = false) int age) {
-        if (age > 0) {
-            return studentService.findByAge(age);
-        }
-        return Collections.emptyList();
+    public Collection<Student> getAll(@RequestParam(value = "age", required = false) Integer age) {
+        return Optional.ofNullable(age)
+                .map(studentService::getAllByAge)
+                .orElseGet(studentService::getALl);
     }
 
-    @GetMapping(params = {"min, max"})
+    @GetMapping(params = {"min", "max"})
     public Collection<Student> getAllByAgeBetween(@RequestParam("min") int minAge,
-                                                                        @RequestParam ("max") int maxAge) {
+                                                  @RequestParam ("max") int maxAge) {
         return studentService.getAllByAgeBetween(minAge, maxAge);
     }
 

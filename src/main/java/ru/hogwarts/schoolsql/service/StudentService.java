@@ -4,7 +4,6 @@ import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.repository.FacultyRepository;
 import ru.hogwarts.schoolsql.repository.StudentRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,7 +22,7 @@ public class StudentService {
         this.facultyRepository = facultyRepository;
     }
 
-    public Student addStudent(Student student) {
+    public Student add(Student student) {
         student.setId(null);
         student.setFaculty(
                 Optional.ofNullable(student.getFaculty())
@@ -34,11 +33,8 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Optional<Student> findStudent(long id) {
-        return studentRepository.findById(id);
-    }
 
-    public Optional<Student> editStudent(long id, Student newStudent) {
+    public Optional<Student> update(long id, Student newStudent) {
         return studentRepository.findById(id)
                 .map(oldStudent -> {
                     oldStudent.setName(newStudent.getName());
@@ -57,7 +53,7 @@ public class StudentService {
         return Collections.unmodifiableCollection(studentRepository.findAll());
     }
 
-    public Optional<Student> deleteStudent(long id) {
+    public Optional<Student> deleteById(long id) {
      return studentRepository.findById(id)
              .map(student -> {
                  studentRepository.delete(student);
@@ -66,9 +62,12 @@ public class StudentService {
     }
 
 
-    public Collection<Student> findByAge(int age) {
-        return studentRepository.findAllByAge(age);
+    public Optional<Student> getById(long id) {
+        return studentRepository.findById(id);
     }
+
+    public Collection<Student> getAllByAge(int age){
+        return studentRepository.findAllByAge(age);}
 
     public Collection<Student> getAllByAgeBetween(int minAge, int maxAge) {
         return studentRepository.findAllByAgeBetween(minAge, maxAge);
