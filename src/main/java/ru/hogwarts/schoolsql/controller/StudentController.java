@@ -1,14 +1,12 @@
 package ru.hogwarts.schoolsql.controller;
 
 
+import ru.hogwarts.schoolsql.entity.Faculty;
 import ru.hogwarts.schoolsql.entity.Student;
 import ru.hogwarts.schoolsql.service.StudentService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -22,46 +20,41 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<Student>> getStudentInfo(@PathVariable Long id) {
-        Optional<Student> student = studentService.findStudent(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+    public Optional<Student> getById(@PathVariable Long id) {
+        return studentService.getById(id);
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public Student add(@RequestBody Student student) {
+        return studentService.add(student);
     }
 
     @PutMapping
-    public ResponseEntity<Optional<Student>> editStudent(@RequestBody long id, @RequestBody Student student) {
-        Optional<Student> foundStudent = studentService.editStudent(id, student);
-        if (foundStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(foundStudent);
+    public Optional<Student> update(@RequestBody long id, @RequestBody Student student) {
+        return studentService.update(id, student);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok().build();
+    public Optional<Student> deleteById(@PathVariable Long id) {
+        return studentService.deleteById(id);
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Student>> findStudents(@RequestParam(required = false) int age) {
-        if (age > 0) {
-            return ResponseEntity.ok(studentService.findByAge(age));
-        }
-        return ResponseEntity.ok(Collections.emptyList());
+    public Collection<Student> getAll(@RequestParam(value = "age", required = false) Integer age) {
+        return Optional.ofNullable(age)
+                .map(studentService::getAllByAge)
+                .orElseGet(studentService::getALl);
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<Student>> getAllByAgeBetween(@RequestParam("min") int minAge,
-                                                                        @RequestParam ("max") int maxAge) {
+    @GetMapping(params = {"min", "max"})
+    public Collection<Student> getAllByAgeBetween(@RequestParam("min") int minAge,
+                                                  @RequestParam ("max") int maxAge) {
         return studentService.getAllByAgeBetween(minAge, maxAge);
+    }
+
+    @GetMapping("/{id}/faculty")
+    public Optional<Faculty> getFacultyByStudentId(@PathVariable long id) {
+        return studentService.getFacultyByStudentId(id);
     }
 
 
